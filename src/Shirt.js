@@ -5,52 +5,87 @@ import { useGLTF } from "@react-three/drei";
 const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl }) => {
   const { nodes, materials } = useGLTF("/models/Formal-Shirt-Blender-2.glb");
 
-  // Create texture from pattern URL
-  const texture = useMemo(() => {
+  // Create texture from pattern URL with custom settings for each part
+  const getTextureForPart = (partName) => {
+    if (!patternUrl) return null;
+
+    const loader = new THREE.TextureLoader();
+    const tex = loader.load(patternUrl);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    
+    // All parts use the same texture scale now since we don't have special small parts
+    tex.repeat.set(1, 1);
+    return tex;
+  };
+
+  // Create textures for each part
+  const textures = useMemo(() => {
+    const result = {};
     if (patternUrl) {
-      const loader = new THREE.TextureLoader();
-      const tex = loader.load(patternUrl);
-      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-      tex.repeat.set(1, 1);
-      return tex;
-    }
-    return null;
-  }, [patternUrl]);
-
-  useEffect(() => {
-    console.log("Shirt Nodes:");
-    Object.keys(nodes).forEach((key) => {
-      console.log(`Node Name: ${key}`, nodes[key]);
-    });
-
-    console.log("Shirt Materials:");
-    if (materials) {
-      Object.keys(materials).forEach((key) => {
-        console.log(`Material Name: ${key}`, materials[key]);
+      Object.keys(nodes).forEach(key => {
+        if (nodes[key].geometry) {
+          result[key] = getTextureForPart(key);
+        }
       });
     }
-  }, [nodes, materials]);
+    return result;
+  }, [patternUrl, nodes]);
+
+  useEffect(() => {
+    console.log("Current state:", {
+      highlightedMesh,
+      patternUrl,
+      availableNodes: Object.keys(nodes)
+    });
+  }, [nodes, highlightedMesh, patternUrl]);
 
   return (
     <group>
       {Object.keys(nodes).map((key) => {
+        const node = nodes[key];
+        if (!node.geometry) return null;
+
         const isHighlighted = highlightedMesh === key;
-        const material = new THREE.MeshStandardMaterial({
-          map: texture,
-          color: texture ? '#ffffff' : color,
+        const shouldApplyPattern = isHighlighted && patternUrl;
+        const showHighlight = isHighlighted && !patternUrl;
+
+        // Create materials for highlighting effect
+        const baseMaterial = new THREE.MeshStandardMaterial({
+          map: shouldApplyPattern ? textures[key] : null,
+          color: shouldApplyPattern ? '#ffffff' : color,
           roughness: 1,
           transparent: true,
-          opacity: isHighlighted ? 1 : 0.8,
+          opacity: patternUrl ? 1 : (showHighlight ? 1 : 0.4),
+          side: THREE.DoubleSide,
+          emissive: showHighlight ? new THREE.Color(0x666666) : new THREE.Color(0x000000),
+          emissiveIntensity: showHighlight ? 0.5 : 0,
+        });
+
+        // Create outline material for highlighted parts
+        const outlineMaterial = new THREE.MeshBasicMaterial({
+          color: 0x00ff00,
+          side: THREE.BackSide,
+          transparent: true,
+          opacity: showHighlight ? 0.3 : 0,
         });
 
         return (
-          <mesh
-            key={key}
-            geometry={nodes[key].geometry}
-            material={material}
-            dispose={null}
-            scale={scale}
-          />
+          <group key={key}>
+            {/* Base mesh */}
+            <mesh
+              geometry={node.geometry}
+              material={baseMaterial}
+              scale={scale}
+            />
+            {/* Outline mesh - only render if highlighting is active */}
+            {!patternUrl && (
+              <mesh
+                geometry={node.geometry}
+                material={outlineMaterial}
+                scale={scale.map(s => s * 1.05)}
+              />
+            )}
+          </group>
         );
       })}
     </group>

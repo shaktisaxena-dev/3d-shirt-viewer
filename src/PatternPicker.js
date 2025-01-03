@@ -4,7 +4,7 @@ import './PatternPicker.css';
 const PatternPicker = ({ onPatternSelect }) => {
   const handleApplyPattern = () => {
     // Use the pattern.jpg from public directory
-    onPatternSelect('/pattern3.jpg');
+    onPatternSelect('/pattern.jpg');
   };
 
   return (

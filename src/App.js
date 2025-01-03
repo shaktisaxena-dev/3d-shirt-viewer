@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CanvasModel from './CanvasModel';
 import ColorPicker from './ColorPicker';
 import ShirtNavigator from './ShirtNavigator';
@@ -9,6 +9,10 @@ function App() {
   const [color, setColor] = useState('#FFFFFF');
   const [highlightedMesh, setHighlightedMesh] = useState(null);
   const [patternUrl, setPatternUrl] = useState(null);
+
+  useEffect(() => {
+    console.log('App State:', { patternUrl, highlightedMesh, color });
+  }, [patternUrl, highlightedMesh, color]);
 
   return (
     <div className="App">
