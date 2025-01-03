@@ -1,42 +1,37 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 
 const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl, selectedPart }) => {
   const { nodes, materials } = useGLTF("/models/Formal-Shirt-Blender-2.glb");
+  const [defaultColor] = useState('#FFFFFF');
 
-  // Create texture from pattern URL with custom settings for each part
-  const getTextureForPart = (partName) => {
+  // Create texture from pattern URL with custom settings
+  const getTextureForPart = () => {
     if (!patternUrl) return null;
 
     const loader = new THREE.TextureLoader();
     const tex = loader.load(patternUrl);
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(1, 1);
+    tex.repeat.set(2, 2);
     return tex;
   };
 
-  // Create textures for each part
-  const textures = useMemo(() => {
-    const result = {};
-    if (patternUrl) {
-      Object.keys(nodes).forEach(key => {
-        if (nodes[key].geometry) {
-          result[key] = getTextureForPart(key);
-        }
-      });
-    }
-    return result;
-  }, [patternUrl, nodes]);
+  // Create a single texture instance for all parts
+  const texture = useMemo(() => {
+    return getTextureForPart();
+  }, [patternUrl]);
 
+  // Debug logging
   useEffect(() => {
-    console.log("Current state:", {
-      highlightedMesh,
-      patternUrl,
+    console.log("Shirt component state:", {
       selectedPart,
-      availableNodes: Object.keys(nodes)
+      patternUrl,
+      hasTexture: !!texture,
+      currentColor: color,
+      availableNodes: Object.keys(nodes).filter(key => nodes[key].geometry)
     });
-  }, [nodes, highlightedMesh, patternUrl, selectedPart]);
+  }, [nodes, patternUrl, selectedPart, texture, color]);
 
   return (
     <group>
@@ -45,19 +40,34 @@ const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl,
         if (!node.geometry) return null;
 
         const isHighlighted = highlightedMesh === key;
-        const shouldApplyPattern = (selectedPart === 'Whole' || selectedPart === key) && patternUrl;
-        const showHighlight = isHighlighted && !patternUrl;
+        const shouldApplyPattern = patternUrl && (selectedPart === 'Whole' || selectedPart === key);
+        const showHighlight = isHighlighted && !shouldApplyPattern && color === defaultColor;
+        
+        // Determine the color for this part
+        const shouldApplyColor = selectedPart === 'Whole' || selectedPart === key;
+        const partColor = shouldApplyColor ? color : defaultColor;
 
         // Create materials for highlighting effect
         const baseMaterial = new THREE.MeshStandardMaterial({
-          map: shouldApplyPattern ? textures[key] : null,
-          color: shouldApplyPattern ? '#ffffff' : color,
+          map: shouldApplyPattern ? texture : null,
+          color: partColor, // Always use partColor, even with pattern
           roughness: 1,
           transparent: true,
           opacity: 1,
           side: THREE.DoubleSide,
           emissive: showHighlight ? new THREE.Color(0x666666) : new THREE.Color(0x000000),
           emissiveIntensity: showHighlight ? 0.5 : 0,
+        });
+
+        // Debug logging for each mesh
+        console.log(`Mesh ${key}:`, {
+          shouldApplyPattern,
+          shouldApplyColor,
+          hasTexture: !!texture,
+          selectedPart,
+          isHighlighted,
+          showHighlight,
+          color: partColor
         });
 
         return (

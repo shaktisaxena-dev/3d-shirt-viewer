@@ -14,6 +14,7 @@ const PatternPicker = ({ onPatternSelect }) => {
   ];
 
   const handlePatternClick = (pattern) => {
+    console.log('Pattern selected:', pattern.url);
     setSelectedPattern(pattern);
     onPatternSelect(pattern.url);
     setIsOpen(false);
