@@ -9,43 +9,55 @@ function App() {
   const [color, setColor] = useState('#FFFFFF');
   const [highlightedMesh, setHighlightedMesh] = useState(null);
   const [patternUrl, setPatternUrl] = useState(null);
+  const [selectedMesh, setSelectedMesh] = useState('Whole');
+
+  // Handle mesh selection
+  const handleMeshSelect = (mesh) => {
+    setHighlightedMesh(mesh === 'Whole' ? null : mesh);
+    setSelectedMesh(mesh);
+  };
 
   useEffect(() => {
-    console.log('App State:', { patternUrl, highlightedMesh, color });
-  }, [patternUrl, highlightedMesh, color]);
+    console.log('App State:', { patternUrl, highlightedMesh, color, selectedMesh });
+  }, [patternUrl, highlightedMesh, color, selectedMesh]);
 
   return (
     <div className="App">
-      <h1>Style.AI</h1> 
-      
-      <div>
-        <h2>Transform Your Style with Custom Colors and Patterns</h2>
-        <p>Customize your shirt with a solid color or our exclusive pattern!</p>
-      </div>
-      
-      <div className="customization-controls">
-        <div className="color-picker-container">
-          <p>Choose Color:</p>
-          <ColorPicker onColorChange={setColor} />
+      <div className="studio-container">
+        {/* Main Canvas Area */}
+        <div className="canvas-container">
+          <CanvasModel 
+            color={color} 
+            highlightedMesh={highlightedMesh} 
+            patternUrl={patternUrl}
+            selectedPart={selectedMesh}
+          />
         </div>
 
-        <div className="pattern-picker-container">
-          <p>Try Pattern:</p>
-          <PatternPicker onPatternSelect={setPatternUrl} />
+        {/* Controls Panel */}
+        <div className="controls-panel">
+          <div className="controls-section">
+            <h3 className="section-title">Navigation</h3>
+            <ShirtNavigator 
+              setHighlightedMesh={handleMeshSelect} 
+            />
+          </div>
+          
+          <div className="controls-section">
+            <h3 className="section-title">Customization</h3>
+            <div className="customization-controls">
+              <div className="control-group">
+                <span className="control-label">Color</span>
+                <ColorPicker onColorChange={setColor} />
+              </div>
+              
+              <div className="control-group">
+                <span className="control-label">Pattern</span>
+                <PatternPicker onPatternSelect={setPatternUrl} />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="canvas-container">
-        <CanvasModel 
-          color={color} 
-          highlightedMesh={highlightedMesh} 
-          patternUrl={patternUrl}
-        />
-      </div>
-
-      <div className="mesh-navigator-container">
-        <h3>Navigate Shirt Components:</h3>
-        <ShirtNavigator setHighlightedMesh={setHighlightedMesh} />
       </div>
     </div>
   );

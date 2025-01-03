@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 
-const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl }) => {
+const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl, selectedPart }) => {
   const { nodes, materials } = useGLTF("/models/Formal-Shirt-Blender-2.glb");
 
   // Create texture from pattern URL with custom settings for each part
@@ -12,8 +12,6 @@ const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl 
     const loader = new THREE.TextureLoader();
     const tex = loader.load(patternUrl);
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-    
-    // All parts use the same texture scale now since we don't have special small parts
     tex.repeat.set(1, 1);
     return tex;
   };
@@ -35,9 +33,10 @@ const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl 
     console.log("Current state:", {
       highlightedMesh,
       patternUrl,
+      selectedPart,
       availableNodes: Object.keys(nodes)
     });
-  }, [nodes, highlightedMesh, patternUrl]);
+  }, [nodes, highlightedMesh, patternUrl, selectedPart]);
 
   return (
     <group>
@@ -46,7 +45,7 @@ const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl 
         if (!node.geometry) return null;
 
         const isHighlighted = highlightedMesh === key;
-        const shouldApplyPattern = isHighlighted && patternUrl;
+        const shouldApplyPattern = (selectedPart === 'Whole' || selectedPart === key) && patternUrl;
         const showHighlight = isHighlighted && !patternUrl;
 
         // Create materials for highlighting effect
@@ -55,36 +54,19 @@ const Shirt = ({ color, scale = [0.04, 0.04, 0.04], highlightedMesh, patternUrl 
           color: shouldApplyPattern ? '#ffffff' : color,
           roughness: 1,
           transparent: true,
-          opacity: patternUrl ? 1 : (showHighlight ? 1 : 0.4),
+          opacity: 1,
           side: THREE.DoubleSide,
           emissive: showHighlight ? new THREE.Color(0x666666) : new THREE.Color(0x000000),
           emissiveIntensity: showHighlight ? 0.5 : 0,
         });
 
-        // Create outline material for highlighted parts
-        const outlineMaterial = new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
-          side: THREE.BackSide,
-          transparent: true,
-          opacity: showHighlight ? 0.3 : 0,
-        });
-
         return (
           <group key={key}>
-            {/* Base mesh */}
             <mesh
               geometry={node.geometry}
               material={baseMaterial}
               scale={scale}
             />
-            {/* Outline mesh - only render if highlighting is active */}
-            {!patternUrl && (
-              <mesh
-                geometry={node.geometry}
-                material={outlineMaterial}
-                scale={scale.map(s => s * 1.05)}
-              />
-            )}
           </group>
         );
       })}

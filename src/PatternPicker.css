@@ -1,18 +1,141 @@
 .pattern-picker {
-  margin: 20px 0;
+  position: relative;
+  display: inline-block;
 }
 
-.upload-btn {
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
+.pattern-toggle {
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: white;
+  transition: all 0.2s ease;
+  min-width: 160px;
 }
 
-.upload-btn:hover {
-  background-color: #45a049;
+.pattern-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.pattern-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pattern-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pattern-preview svg {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+.pattern-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pattern-grid {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 1rem;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.2s ease-out;
+  min-width: 240px;
+}
+
+.pattern-option {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.pattern-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.pattern-option.active {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.pattern-option img {
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.pattern-option svg {
+  width: 24px;
+  height: 24px;
+  color: currentColor;
+}
+
+.pattern-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pattern-grid {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    transform: none;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .pattern-option img {
+    height: 48px;
+  }
 }

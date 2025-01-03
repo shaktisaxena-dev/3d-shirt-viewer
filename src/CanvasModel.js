@@ -5,7 +5,7 @@ import Backdrop from "./Backdrop";
 import CameraRig from "./CameraRig";
 import Shirt from "./Shirt";
 
-const CanvasModel = ({ color, highlightedMesh, patternUrl }) => {
+const CanvasModel = ({ color, highlightedMesh, patternUrl, selectedPart }) => {
   return (
     <Canvas
       shadows
@@ -22,6 +22,7 @@ const CanvasModel = ({ color, highlightedMesh, patternUrl }) => {
             color={color} 
             highlightedMesh={highlightedMesh} 
             patternUrl={patternUrl}
+            selectedPart={selectedPart}
           />
         </Center>
       </CameraRig>
