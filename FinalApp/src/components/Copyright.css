@@ -1,0 +1,8 @@
+.footer-copyright {
+    background-color: white; /* Set background color to white */
+    color: black; /* Set text color to black for contrast */
+    width: 100%; /* Ensure it takes the full width */
+    text-align: center; /* Center the text */
+    /* padding: 1px 0; Add some padding */
+    height: auto
+}

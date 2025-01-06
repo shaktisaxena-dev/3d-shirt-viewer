@@ -1,0 +1,62 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 2px solid #0e599e;
+}
+
+.logo {
+    height: 80px;
+    width: 100px;
+}
+
+.nav {
+    flex-grow: 1; /* Ensure that the nav takes available space */
+    display: flex;
+    justify-content: flex-end; /* Aligns items to the right */
+}
+
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    /* margin-left: auto; Moves nav to the rightmost side */
+}
+
+.nav-list li {
+    margin: 0 15px;
+}
+
+.nav-btn {
+    background-color: transparent;
+    border: 1px solid #80b6e0; /* Thinner border */
+    color: #ffffff;
+    padding: 10px 20px;
+    font-weight: 600; /* Slightly lighter weight for a modern feel */
+    font-size: 1rem; /* Consistent size */
+    cursor: pointer;
+    border-radius: 25px; /* Rounded corners for a more modern look */
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-transform: uppercase; /* Modern touch for readability */
+    letter-spacing: 1px; /* Slightly increased letter spacing */
+}
+
+.nav-btn:hover {
+    background-color: #0e599e;
+    color: #fff;
+    transform: scale(1.05) translateY(-2px); /* Slight upward hover effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.nav-btn:focus {
+    outline: none; /* Remove focus outline */
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2); /* Focus effect */
+}
+
+.icons i {
+    margin-left: 15px;
+}

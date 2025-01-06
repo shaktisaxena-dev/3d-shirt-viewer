@@ -1,0 +1,10 @@
+#root {
+    height: 70%;
+}
+
+h1 {
+    font-size: 2.5rem; /* Adjust size as needed */
+    font-weight: bold;
+    color: red !important; /* Ensure the heading color is red */
+    margin-bottom: 40px; /* Space after the heading */
+}

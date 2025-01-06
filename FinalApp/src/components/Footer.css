@@ -1,0 +1,99 @@
+.footer {
+    background-color: #ff4500;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* padding: 10px; */
+    gap: 10px;
+}
+
+.footer-content div {
+    flex: 1;
+    /* margin: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content */
+}
+
+.footer-content h3 {
+    margin-bottom: 10px;
+}
+
+.footer-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-content ul li {
+    margin: 5px 0;
+}
+
+.footer-content ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-content form {
+    display: flex;
+    flex-direction: column;
+    width: 70%
+}
+
+.footer-content form input {
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+.footer-content form button {
+    padding: 10px;
+    background-color: #0e599e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Add vertical line after the Contact Us section */
+.footer-content div:nth-child(1) {
+    border-right: 1px solid #fff;
+    padding-right: 20px;
+}
+
+.footer-content div:nth-child(2) {
+    padding-left: 20px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.social-icons a {
+    color: #fff;
+    font-size: 1.5em;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Remove the vertical line on smaller screens */
+    .footer-content div:nth-child(1),
+    .footer-content div:nth-child(2) {
+        border-right: none;
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
