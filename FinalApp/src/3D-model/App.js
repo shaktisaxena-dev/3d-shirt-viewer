@@ -5,14 +5,14 @@ import ShirtNavigator from './ShirtNavigator';
 import PatternPicker from './PatternPicker';
 import LoadingScreen from './LoadingScreen';
 import './App.css';
-
+ 
 function App() {
   const [color, setColor] = useState('#FFFFFF');
   const [highlightedMesh, setHighlightedMesh] = useState(null);
   const [patternUrl, setPatternUrl] = useState(null);
   const [selectedMesh, setSelectedMesh] = useState('Whole');
   const [isLoading, setIsLoading] = useState(true);
-
+ 
   // Handle color changes
   const handleColorChange = (newColor) => {
     // Remove pattern when color is changed
@@ -23,12 +23,12 @@ function App() {
     }
     setColor(newColor);
   };
-
+ 
   // Handle loading complete
   const handleLoadingComplete = () => {
     setIsLoading(false);
   };
-
+ 
   // Debug logging
   useEffect(() => {
     console.log('App State:', {
@@ -38,7 +38,7 @@ function App() {
       color
     });
   }, [selectedMesh, patternUrl, highlightedMesh, color]);
-
+ 
   // Handle mesh selection
   const handleMeshSelect = (mesh) => {
     console.log('handleMeshSelect called with:', mesh);
@@ -49,7 +49,20 @@ function App() {
     setHighlightedMesh(shouldHighlight && newMesh !== 'Whole' ? newMesh : null);
     setSelectedMesh(newMesh);
   };
-
+ 
+  // Function to download the current image
+  const downloadImage = () => {
+    const canvas = document.querySelector('canvas'); // Assuming the canvas is the first canvas element
+    if (canvas) {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png'); // Get the image data
+      link.download = 'shirt-image.png'; // Set the download filename
+      link.click(); // Trigger the download
+    } else {
+      console.error('Canvas not found');
+    }
+  };
+ 
   return (
     <>
       {isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} />}
@@ -58,25 +71,25 @@ function App() {
           {/* Main Canvas Area */}
           <div className="canvas-container">
             <Suspense fallback={null}>
-              <CanvasModel 
-                color={color} 
-                highlightedMesh={highlightedMesh} 
+              <CanvasModel
+                color={color}
+                highlightedMesh={highlightedMesh}
                 patternUrl={patternUrl}
                 selectedPart={selectedMesh}
               />
             </Suspense>
           </div>
-
+ 
           {/* Controls Panel */}
           <div className="controls-panel">
             <div className="controls-section">
               <h3 className="section-title">Navigation</h3>
-              <ShirtNavigator 
+              <ShirtNavigator
                 setHighlightedMesh={handleMeshSelect}
                 selectedPart={selectedMesh}
               />
             </div>
-            
+           
             <div className="controls-section">
               <h3 className="section-title">Customization</h3>
               <div className="customization-controls">
@@ -84,12 +97,17 @@ function App() {
                   <span className="control-label">Color</span>
                   <ColorPicker onColorChange={handleColorChange} />
                 </div>
-                
+               
                 <div className="control-group">
                   <span className="control-label">Pattern</span>
                   <PatternPicker onPatternSelect={setPatternUrl} />
                 </div>
               </div>
+            </div>
+ 
+            {/* Download Button */}
+            <div className="controls-section">
+              <button onClick={downloadImage} className="download-button">Download Shirt</button>
             </div>
           </div>
         </div>
@@ -97,5 +115,5 @@ function App() {
     </>
   );
 }
-
+ 
 export default App;
